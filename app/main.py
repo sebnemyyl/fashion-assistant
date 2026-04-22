@@ -1,4 +1,4 @@
-from llm_service import generate_outfit
+from llm_service import generate_outfit, describe_clothing_item
 from wardrobe_service import init_db, add_item, get_all_items
 
 """
@@ -36,3 +36,24 @@ print("Generating outfit...\n")
 result = generate_outfit(user_request, wardrobe)
 
 print(result)
+
+# Path to your image
+image_path = "data/shirt.png"
+
+# Getting the Base64 string
+base64_image = describe_clothing_item(image_path)
+print("Clothing item description:", base64_image)
+
+import streamlit as st
+from image_service import save_image
+from openai import OpenAI
+
+st.title("👗 Virtual Wardrobe")
+
+uploaded_file = st.file_uploader("Upload a clothing item", type=["png", "jpg", "jpeg"])
+
+if uploaded_file is not None:
+    image_path = save_image(uploaded_file)
+
+    st.image(uploaded_file, caption="Uploaded Image", use_container_width=True)
+    st.success(f"Saved to: {image_path}")

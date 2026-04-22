@@ -1,1 +1,6 @@
 .env
+*.jpg
+*.png
+.DS_Store
+__pycache__/
+*.pyc

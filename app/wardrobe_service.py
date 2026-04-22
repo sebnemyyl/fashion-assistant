@@ -16,7 +16,8 @@ def init_db():
             color TEXT,
             style TEXT,
             season TEXT,
-            occasion TEXT
+            occasion TEXT,
+            image_path TEXT
         )
     """)
 
