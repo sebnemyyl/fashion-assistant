@@ -1,34 +1,34 @@
-👗 AI Fashion Assistant (Work in Progress)
+### 👗 AI Fashion Assistant (Work in Progress)
 
 An AI-powered fashion assistant that helps users generate outfit suggestions based on their personal wardrobe, occasion, and context (e.g., weather, mood).
 
-Status: Work in Progress
-This project is actively being developed and features are continuously being improved and expanded.
+This project is actively being developed and features are continuously being improved.
 
-Features
+#### Features
+
 1- Image-Based Clothing Description
 Upload an image of a clothing item
 AI extracts structured attributes:
-Type
-Color
-Style
-Season
-Occasion
+- Type
+- Color
+- Style
+- Season
+- Occasion
 
 2- Store clothing item attributes in a local SQLite database
 
 3- Virtual Wardrobe Management
 
-AI Outfit Generation
+4- AI Outfit Generation
 Uses OpenAI models to generate outfit combinations
 Selects:
-1 top
-1 bottom
-1 outerwear (if appropriate)
-1 pair of shoes
+- 1 top
+- 1 bottom
+- 1 outerwear
+- 1 pair of shoes
 Based only on available wardrobe items
 
-Setup
+#### Setup
 1. Clone the repository
 2. Create a virtual environment
 3. Install dependencies
