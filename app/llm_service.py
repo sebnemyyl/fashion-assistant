@@ -59,7 +59,11 @@ def encode_image(image_path):
 
 
 
-def describe_clothing_item(image_path):
+def describe_clothing_item(image_path: str) -> dict | None:
+    """Analyse a clothing image and return a dict with type, color, style, season, occasion.
+ 
+    Returns None if the response cannot be parsed as JSON.
+    """
     base64_image = encode_image(image_path)
     response = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -67,10 +71,25 @@ def describe_clothing_item(image_path):
             {
                 "role": "user",
                 "content": [
-                {"type": "text", "text": "Describe this clothing item. Return JSON with type, color, style, season."},
-                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{base64_image}"}}
-            ]
-        }
-    ]
+                    {
+                        "type": "text",
+                        "text": (
+                            "Describe this clothing item. "
+                            "Return ONLY a JSON object with these keys: "
+                            "type, color, style, season, occasion. "
+                            "No markdown, no explanation, just the JSON."
+                        ),
+                    },
+                    {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{base64_image}"}},
+                ],
+            }
+        ],
     )
-    return response.choices[0].message.content
+ 
+    raw = response.choices[0].message.content.strip()
+    # Strip accidental markdown fences
+    raw = raw.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        return None

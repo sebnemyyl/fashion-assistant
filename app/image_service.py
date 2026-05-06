@@ -1,20 +1,31 @@
-import os
-from uuid import uuid4
+import torch
+import torchvision.transforms as T
+from torchvision.models.segmentation import deeplabv3_resnet101
 from PIL import Image
+import numpy as np
 
-IMAGE_FOLDER = "data/images"
+model = deeplabv3_resnet101(pretrained=True).eval()
 
-def save_image(file):
-    # Ensure folder exists
-    os.makedirs(IMAGE_FOLDER, exist_ok=True)
+def remove_background(image: Image.Image) -> Image.Image:
+    transform = T.Compose([
+        T.Resize(512),
+        T.ToTensor(),
+    ])
 
-    # Generate unique filename
-    file_id = str(uuid4())
-    file_path = os.path.join(IMAGE_FOLDER, f"{file_id}.png")
+    input_tensor = transform(image).unsqueeze(0)
 
-    # Open and save image
-    image = Image.open(file)
-    image = image.convert("RGB")  # normalize format
-    image.save(file_path)
+    with torch.no_grad():
+        output = model(input_tensor)['out'][0]
 
-    return file_path
+    mask = output.argmax(0).byte().cpu().numpy()
+
+    # Keep "person" class (15 in COCO)
+    mask = (mask == 15).astype(np.uint8) * 255
+
+    # Resize mask back to original image dimensions
+    mask_resized = Image.fromarray(mask).resize(image.size, resample=Image.NEAREST)
+
+    img = np.array(image.convert("RGBA"))
+    img[:, :, 3] = np.array(mask_resized)
+
+    return Image.fromarray(img)

@@ -25,15 +25,15 @@ def init_db():
     conn.close()
 
 
-def add_item(name, type_, color, style, season, occasion):
+def add_item(name, type_, color, style, season, occasion, image_path=""):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-
+ 
     cursor.execute("""
-        INSERT INTO wardrobe (name, type, color, style, season, occasion)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (name, type_, color, style, season, occasion))
-
+        INSERT INTO wardrobe (name, type, color, style, season, occasion, image_path)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (name, type_, color, style, season, occasion, image_path))
+ 
     conn.commit()
     conn.close()
 
